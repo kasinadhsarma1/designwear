@@ -138,6 +138,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.w600,
               ),
             ),
+            if (authService.currentUser?.email != null)
+              Text(
+                authService.currentUser!.email!,
+                style: GoogleFonts.poppins(color: Colors.grey[600]),
+              ),
             if (authService.currentUser?.phone != null)
               Text(
                 '+91 ${authService.currentUser!.phone}',

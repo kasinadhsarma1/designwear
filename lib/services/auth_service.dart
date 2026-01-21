@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 class User {
   final String? id;
@@ -16,10 +16,11 @@ class User {
     this.isGuest = false,
   });
 
-  bool get isLoggedIn => id != null || phone != null;
+  bool get isLoggedIn => id != null;
 }
 
 class AuthService extends ChangeNotifier {
+  final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
   User? _currentUser;
   bool _isLoading = false;
 
@@ -27,43 +28,63 @@ class AuthService extends ChangeNotifier {
   bool get isLoggedIn => _currentUser?.isLoggedIn ?? false;
   bool get isLoading => _isLoading;
 
-  Future<void> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('user_id');
-    final phone = prefs.getString('user_phone');
-    final name = prefs.getString('user_name');
-    final email = prefs.getString('user_email');
+  AuthService() {
+    _auth.authStateChanges().listen(_onAuthStateChanged);
+  }
 
-    if (userId != null || phone != null) {
+  void init() {
+    // Initialized in constructor listener
+  }
+
+  Future<void> _onAuthStateChanged(fb.User? firebaseUser) async {
+    if (firebaseUser == null) {
+      _currentUser = null;
+    } else {
       _currentUser = User(
-        id: userId,
-        phone: phone,
-        name: name,
-        email: email,
+        id: firebaseUser.uid,
+        email: firebaseUser.email,
+        name: firebaseUser.displayName,
+        phone: firebaseUser.phoneNumber,
       );
+    }
+    notifyListeners();
+  }
+
+  Future<void> signInWithEmail(String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> signUpWithEmail(String email, String password, String name) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      fb.UserCredential result = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await result.user?.updateDisplayName(name);
+      await _onAuthStateChanged(result.user);
+    } finally {
+      _isLoading = false;
       notifyListeners();
     }
   }
 
   Future<void> loginWithPhone(String phone, String otp) async {
+    // Note: Phone auth requires a different flow (verifyPhoneNumber)
+    // For now, keeping as a placeholder or implementing if needed
     _isLoading = true;
     notifyListeners();
-
     try {
-      // In a real app, verify OTP with GoKwik API
-      await Future.delayed(const Duration(seconds: 1)); // Simulated delay
-
-      _currentUser = User(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        phone: phone,
-      );
-
-      // Save to preferences
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_id', _currentUser!.id!);
-      await prefs.setString('user_phone', phone);
-
-      notifyListeners();
+      // Logic for phone auth would go here
+      // For simplicity in this step, focusing on email/password
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -71,39 +92,27 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<void> loginAsGuest() async {
-    _currentUser = User(
-      id: 'guest_${DateTime.now().millisecondsSinceEpoch}',
-      isGuest: true,
-    );
+    _isLoading = true;
     notifyListeners();
+    try {
+      await _auth.signInAnonymously();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> updateProfile({String? name, String? email}) async {
-    if (_currentUser == null) return;
+    final firebaseUser = _auth.currentUser;
+    if (firebaseUser == null) return;
 
-    _currentUser = User(
-      id: _currentUser!.id,
-      phone: _currentUser!.phone,
-      name: name ?? _currentUser!.name,
-      email: email ?? _currentUser!.email,
-      isGuest: _currentUser!.isGuest,
-    );
+    if (name != null) await firebaseUser.updateDisplayName(name);
+    if (email != null) await firebaseUser.updateEmail(email);
 
-    final prefs = await SharedPreferences.getInstance();
-    if (name != null) await prefs.setString('user_name', name);
-    if (email != null) await prefs.setString('user_email', email);
-
-    notifyListeners();
+    await _onAuthStateChanged(_auth.currentUser);
   }
 
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_id');
-    await prefs.remove('user_phone');
-    await prefs.remove('user_name');
-    await prefs.remove('user_email');
-
-    _currentUser = null;
-    notifyListeners();
+    await _auth.signOut();
   }
 }
