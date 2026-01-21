@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../services/sanity_service.dart';
+import '../services/cart_service.dart';
+import '../services/auth_service.dart';
 import '../models/product.dart';
 import '../models/category.dart';
 import 'product_detail_screen.dart';
+import 'cart_screen.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -34,7 +39,64 @@ class _HomeScreenState extends State<HomeScreen> {
           style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart_outlined)),
+          // Login/Profile Button
+          Consumer<AuthService>(
+            builder: (context, authService, child) {
+              return IconButton(
+                onPressed: () {
+                  if (authService.isLoggedIn) {
+                    _showProfileBottomSheet(context, authService);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    );
+                  }
+                },
+                icon: Icon(
+                  authService.isLoggedIn ? Icons.person : Icons.person_outline,
+                ),
+              );
+            },
+          ),
+          // Cart Button with Badge
+          Consumer<CartService>(
+            builder: (context, cartService, child) {
+              return Stack(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CartScreen()),
+                      );
+                    },
+                    icon: const Icon(Icons.shopping_cart_outlined),
+                  ),
+                  if (cartService.itemCount > 0)
+                    Positioned(
+                      right: 6,
+                      top: 6,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${cartService.itemCount}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -46,6 +108,63 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildCategoryList(),
             _buildSectionTitle('Featured Products'),
             _buildProductGrid(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showProfileBottomSheet(BuildContext context, AuthService authService) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.deepPurple.shade100,
+              child: Icon(Icons.person, size: 40, color: Colors.deepPurple.shade700),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              authService.currentUser?.name ?? 'Guest User',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (authService.currentUser?.phone != null)
+              Text(
+                '+91 ${authService.currentUser!.phone}',
+                style: GoogleFonts.poppins(color: Colors.grey[600]),
+              ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {
+                  authService.logout();
+                  Navigator.pop(context);
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  side: const BorderSide(color: Colors.red),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Logout',
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
           ],
         ),
       ),
