@@ -62,6 +62,17 @@
     GOKWIK_API_KEY=your_api_key
     ```
     *Note: You need to obtain API keys from Google AI Studio and Sanity.io.*
+    
+    5.  **Sanity Studio Setup**
+    Navigate to the `studio` directory and create a `.env` file:
+    ```bash
+    cd studio
+    ```
+    Create `studio/.env`:
+    ```env
+    SANITY_STUDIO_PROJECT_ID=your_sanity_project_id
+    SANITY_STUDIO_DATASET=production
+    ```
 
 4.  **Run the App**
     ```bash
