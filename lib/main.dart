@@ -40,9 +40,70 @@ class DesignWearApp extends StatelessWidget {
         title: 'Design Wear',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
-          textTheme: GoogleFonts.outfitTextTheme(),
+          brightness: Brightness.light,
+          primaryColor: const Color(0xFF1A1A1A),
+          scaffoldBackgroundColor: Colors.white,
+          colorScheme: const ColorScheme.light(
+            primary: Color(0xFF1A1A1A),
+            secondary: Color(0xFFD4AF37), // Muted Gold
+            surface: Colors.white,
+            error: Color(0xFFB00020),
+            onPrimary: Colors.white,
+            onSecondary: Colors.black,
+            onSurface: Color(0xFF1A1A1A),
+          ),
+          textTheme: GoogleFonts.outfitTextTheme().copyWith(
+            displayLarge: GoogleFonts.outfit(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF1A1A1A),
+            ),
+            titleLarge: GoogleFonts.outfit(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF1A1A1A),
+            ),
+            bodyLarge: GoogleFonts.outfit(
+              fontSize: 16,
+              color: const Color(0xFF1A1A1A),
+            ),
+          ),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            foregroundColor: Color(0xFF1A1A1A),
+            elevation: 0,
+            scrolledUnderElevation: 0,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF1A1A1A), // Black background
+              foregroundColor: Colors.white, // White text
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: GoogleFonts.outfit(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFF1A1A1A),
+              side: const BorderSide(color: Color(0xFF1A1A1A), width: 1.5),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: GoogleFonts.outfit(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ),
         home: const HomeScreen(),
       ),

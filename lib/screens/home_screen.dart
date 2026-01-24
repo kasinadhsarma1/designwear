@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../widgets/safe_network_image.dart';
 import 'package:provider/provider.dart';
 import '../services/sanity_service.dart';
 import '../services/cart_service.dart';
@@ -10,6 +11,8 @@ import '../models/category.dart';
 import 'product_detail_screen.dart';
 import 'cart_screen.dart';
 import 'login_screen.dart';
+import 'design_studio_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -45,7 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
               return IconButton(
                 onPressed: () {
                   if (authService.isLoggedIn) {
-                    _showProfileBottomSheet(context, authService);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                    );
                   } else {
                     Navigator.push(
                       context,
@@ -55,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 icon: Icon(
                   authService.isLoggedIn ? Icons.person : Icons.person_outline,
+                  color: const Color(0xFF1A1A1A),
                 ),
               );
             },
@@ -71,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(builder: (_) => const CartScreen()),
                       );
                     },
-                    icon: const Icon(Icons.shopping_cart_outlined),
+                    icon: const Icon(Icons.shopping_bag_outlined, color: Color(0xFF1A1A1A)),
                   ),
                   if (cartService.itemCount > 0)
                     Positioned(
@@ -80,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: const BoxDecoration(
-                          color: Colors.red,
+                          color: Color(0xFFD4AF37), // Gold badge
                           shape: BoxShape.circle,
                         ),
                         child: Text(
@@ -104,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeroSection(),
+            _buildDesignStudioBanner(), // New entry point
             _buildSectionTitle('Categories'),
             _buildCategoryList(),
             _buildSectionTitle('Featured Products'),
@@ -114,106 +122,71 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showProfileBottomSheet(BuildContext context, AuthService authService) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: Colors.deepPurple.shade100,
-              child: Icon(Icons.person, size: 40, color: Colors.deepPurple.shade700),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              authService.currentUser?.name ?? 'Guest User',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            if (authService.currentUser?.email != null)
-              Text(
-                authService.currentUser!.email!,
-                style: GoogleFonts.poppins(color: Colors.grey[600]),
-              ),
-            if (authService.currentUser?.phone != null)
-              Text(
-                '+91 ${authService.currentUser!.phone}',
-                style: GoogleFonts.poppins(color: Colors.grey[600]),
-              ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
-                onPressed: () {
-                  authService.logout();
-                  Navigator.pop(context);
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: const BorderSide(color: Colors.red),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  'Logout',
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildHeroSection() {
     return Container(
       width: double.infinity,
-      height: 200,
+      height: 240,
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [Colors.blue.shade800, Colors.purple.shade700]),
-        borderRadius: BorderRadius.circular(20),
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(0), // Sharp edges or minimal radius for modern look
+        image: const DecorationImage(
+          image: NetworkImage('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop'),
+          fit: BoxFit.cover,
+          opacity: 0.7,
+        ),
       ),
       child: Stack(
         children: [
-          Positioned(
-            right: -20,
-            bottom: -20,
-            child: Icon(Icons.style, size: 150, color: Colors.white.withOpacity(0.1)),
+          Container(
+            decoration: BoxDecoration(
+             gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Colors.black.withOpacity(0.8),
+                Colors.transparent,
+              ],
+             ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(24.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Text(
+                  'NEW COLLECTION',
+                  style: GoogleFonts.outfit(
+                    fontSize: 12,
+                    letterSpacing: 2,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFD4AF37), // Gold
+                  ),
+                ),
+                const SizedBox(height: 8),
                 Text(
                   'Signature Style,\nPremium Comfort',
                   style: GoogleFonts.outfit(
-                    fontSize: 24,
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    height: 1.1,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                   ),
-                  child: const Text('Shop Now'),
+                  child: const Text('SHOP NOW'),
                 ),
               ],
             ),
@@ -223,12 +196,85 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildDesignStudioBanner() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const DesignStudioScreen()),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        height: 120,
+        decoration: BoxDecoration(
+          color: Colors.black,
+          image: const DecorationImage(
+            image: NetworkImage('https://images.unsplash.com/photo-1503342394128-c104d54dba01?q=80&w=2069&auto=format&fit=crop'), // Fashion/Design related image
+            fit: BoxFit.cover,
+            opacity: 0.4,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'DESIGN YOUR OWN',
+                style: GoogleFonts.outfit(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  letterSpacing: 2,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFD4AF37)),
+                ),
+                child: Text(
+                  'START CREATING',
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFFD4AF37),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
-      child: Text(
-        title,
-        style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold),
+      padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title.toUpperCase(),
+            style: GoogleFonts.outfit(
+              fontSize: 14, 
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+              color: Colors.black87,
+            ),
+          ),
+          Text(
+            'See All',
+            style: GoogleFonts.outfit(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFFD4AF37),
+              decoration: TextDecoration.underline,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -244,26 +290,28 @@ class _HomeScreenState extends State<HomeScreen> {
           return const SizedBox(height: 100, child: Center(child: Text('No categories found')));
         }
         return SizedBox(
-          height: 100,
+          height: 50,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
             itemCount: snapshot.data!.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
               final category = snapshot.data![index];
-              return Column(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey.shade200,
-                    backgroundImage: category.imageUrl != null 
-                        ? CachedNetworkImageProvider(category.imageUrl!) 
-                        : null,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(category.title, style: GoogleFonts.outfit(fontSize: 12)),
-                ],
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black12),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Text(
+                  category.title, 
+                  style: GoogleFonts.outfit(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87
+                  )
+                ),
               );
             },
           ),
@@ -288,9 +336,9 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 0.7,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
+            childAspectRatio: 0.60, // Taller images for fashion
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 24,
           ),
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
@@ -304,55 +352,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               },
-              child: Card(
-                elevation: 0,
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  side: BorderSide(color: Colors.grey.shade200),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Hero(
-                        tag: product.id,
-                        child: Container(
-                          width: double.infinity,
-                          color: Colors.grey.shade100,
-                          child: product.imageUrl != null
-                              ? CachedNetworkImage(
-                                  imageUrl: product.imageUrl!,
-                                  fit: BoxFit.cover,
-                                )
-                              : const Icon(Icons.image_not_supported),
-                        ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Hero(
+                      tag: product.id,
+                      child: Container(
+                        width: double.infinity,
+                        color: Colors.grey.shade50,
+                        child: product.imageUrl != null
+                            ? SafeNetworkImage(
+                                imageUrl: product.imageUrl!,
+                                fit: BoxFit.cover,
+                              )
+                            : const Icon(Icons.image_not_supported),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '\$${product.price.toStringAsFixed(2)}',
-                            style: GoogleFonts.outfit(
-                              color: Colors.blue.shade700,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    product.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                      color: Colors.black87,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '₹${product.price.toStringAsFixed(2)}',
+                    style: GoogleFonts.outfit(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             );
           },

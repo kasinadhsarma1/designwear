@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../widgets/safe_network_image.dart';
 import '../services/cart_service.dart';
 import '../models/cart.dart';
 import 'checkout_screen.dart';
@@ -15,11 +16,16 @@ class CartScreen extends StatelessWidget {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: Text(
-          'Shopping Cart',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          'YOUR CART',
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            fontSize: 16,
+          ),
         ),
+        centerTitle: true,
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
+        foregroundColor: Colors.black,
         elevation: 0,
       ),
       body: Consumer<CartService>(
@@ -69,16 +75,19 @@ class CartScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepPurple,
+              backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(0),
               ),
             ),
             child: Text(
-              'Continue Shopping',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+              'CONTINUE SHOPPING',
+              style: GoogleFonts.outfit(
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+              ),
             ),
           ),
         ],
@@ -100,37 +109,24 @@ class CartScreen extends StatelessWidget {
   Widget _buildCartItem(
       BuildContext context, CartService cartService, CartItem item) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
+      margin: const EdgeInsets.only(bottom: 24),
+      decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border(bottom: BorderSide(color: Colors.black12)), // Minimal separator
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.only(bottom: 24),
         child: Row(
           children: [
             // Product Image
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(0), // Sharp images
               child: item.product.imageUrl != null
-                  ? CachedNetworkImage(
+                  ? SafeNetworkImage(
                       imageUrl: item.product.imageUrl!,
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey[200],
-                        child: const Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
                     )
                   : Container(
                       width: 80,
@@ -147,7 +143,7 @@ class CartScreen extends StatelessWidget {
                 children: [
                   Text(
                     item.product.title,
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.outfit(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                     ),
@@ -159,19 +155,39 @@ class CartScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         'Size: ${item.selectedSize}',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.outfit(
                           color: Colors.grey[600],
                           fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  if (item.customDesign != null)
+                   Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFD4AF37).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: const Color(0xFFD4AF37), width: 0.5),
+                        ),
+                        child: Text(
+                          'CUSTOM DESIGN',
+                          style: GoogleFonts.outfit(
+                            color: const Color(0xFFD4AF37),
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   const SizedBox(height: 8),
                   Text(
                     '₹${item.product.price.toStringAsFixed(2)}',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w700,
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: Colors.deepPurple,
+                      color: Colors.black,
                     ),
                   ),
                 ],
@@ -210,7 +226,7 @@ class CartScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
                           '${item.quantity}',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                          style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
                         ),
                       ),
                       InkWell(
@@ -257,11 +273,11 @@ class CartScreen extends StatelessWidget {
               children: [
                 Text(
                   'Subtotal',
-                  style: GoogleFonts.poppins(color: Colors.grey[600]),
+                  style: GoogleFonts.outfit(color: Colors.grey[600]),
                 ),
                 Text(
                   '₹${cartService.subtotal.toStringAsFixed(2)}',
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -270,12 +286,12 @@ class CartScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Tax (18% GST)',
-                  style: GoogleFonts.poppins(color: Colors.grey[600]),
+                  'Tax (${cartService.currentTaxRate}% GST)',
+                  style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey[600]),
                 ),
                 Text(
                   '₹${cartService.tax.toStringAsFixed(2)}',
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -285,17 +301,17 @@ class CartScreen extends StatelessWidget {
               children: [
                 Text(
                   'Total',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.outfit(
                     fontWeight: FontWeight.w700,
                     fontSize: 18,
                   ),
                 ),
                 Text(
                   '₹${cartService.total.toStringAsFixed(2)}',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: Colors.deepPurple,
+                  style: GoogleFonts.outfit(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black,
                   ),
                 ),
               ],
@@ -314,19 +330,20 @@ class CartScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(0),
                   ),
                   elevation: 0,
                 ),
                 child: Text(
-                  'Proceed to Checkout',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
+                  'PROCEED TO CHECKOUT',
+                  style: GoogleFonts.outfit(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    letterSpacing: 1,
                   ),
                 ),
               ),

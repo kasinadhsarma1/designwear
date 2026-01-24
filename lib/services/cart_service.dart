@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import '../models/cart.dart';
 import '../models/product.dart';
+import '../models/custom_design.dart';
+import 'sanity_service.dart';
 
 class CartService extends ChangeNotifier {
   final Cart _cart = Cart();
@@ -20,9 +22,30 @@ class CartService extends ChangeNotifier {
   bool get isEmpty => _cart.isEmpty;
 
   bool get isNotEmpty => _cart.isNotEmpty;
+  
+  final SanityService _sanityService = SanityService();
+  double _currentTaxRate = 18.0;
 
-  void addToCart(Product product, {int quantity = 1, String? size}) {
-    _cart.addItem(product, quantity: quantity, size: size);
+  double get currentTaxRate => _currentTaxRate;
+
+  CartService() {
+    _init();
+  }
+
+  Future<void> _init() async {
+    try {
+      _currentTaxRate = await _sanityService.fetchTaxRate();
+      _cart.setTaxRate(_currentTaxRate);
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching tax rate: $e');
+      }
+    }
+  }
+
+  void addToCart(Product product, {int quantity = 1, String? size, CustomDesign? customDesign}) {
+    _cart.addItem(product, quantity: quantity, size: size, customDesign: customDesign);
     notifyListeners();
   }
 

@@ -130,9 +130,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         iconTheme: const IconThemeData(color: Colors.black87),
         bottom: TabBar(
           controller: _tabController,
-          labelColor: Colors.deepPurple,
+          indicatorColor: const Color(0xFFD4AF37), // Gold indicator
+          labelColor: Colors.black,
           unselectedLabelColor: Colors.grey,
-          indicatorColor: Colors.deepPurple,
+          labelStyle: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+          unselectedLabelStyle: GoogleFonts.outfit(),
           tabs: const [
             Tab(text: 'Phone'),
             Tab(text: 'Email'),
@@ -159,10 +161,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         children: [
           const SizedBox(height: 20),
           Text(
-            _showOtpField ? 'Verify OTP' : 'Welcome Back!',
-            style: GoogleFonts.poppins(
-              fontSize: 28,
+            _showOtpField ? 'VERIFY OTP' : 'WELCOME BACK',
+            style: GoogleFonts.outfit(
+              fontSize: 24,
               fontWeight: FontWeight.bold,
+              letterSpacing: 1,
             ),
           ),
           const SizedBox(height: 8),
@@ -170,14 +173,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             _showOtpField
                 ? 'Enter the 6-digit code sent to +91 ${_phoneController.text}'
                 : 'Sign in with your phone number to continue',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.outfit(
               fontSize: 14,
               color: Colors.grey[600],
             ),
           ),
           const SizedBox(height: 40),
           if (!_showOtpField) ...[
-            _buildLabel('Phone Number'),
+            _buildLabel('PHONE NUMBER'),
             const SizedBox(height: 8),
             TextField(
               controller: _phoneController,
@@ -189,14 +192,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               ),
             ),
           ] else ...[
-            _buildLabel('OTP Code'),
+            _buildLabel('OTP CODE'),
             const SizedBox(height: 8),
             TextField(
               controller: _otpController,
               keyboardType: TextInputType.number,
               maxLength: 6,
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.outfit(
                 fontSize: 24,
                 letterSpacing: 16,
                 fontWeight: FontWeight.w600,
@@ -206,14 +209,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             const SizedBox(height: 16),
             TextButton(
               onPressed: () => setState(() => _showOtpField = false),
-              child: Text('Change phone number', style: GoogleFonts.poppins(color: Colors.deepPurple)),
+              child: Text('Change phone number', style: GoogleFonts.outfit(color: const Color(0xFFD4AF37))),
             ),
           ],
           if (_error != null) _buildErrorBox(),
           const SizedBox(height: 32),
           _buildActionButton(
             onPressed: _isLoading ? null : (_showOtpField ? _verifyOtp : _sendOtp),
-            text: _showOtpField ? 'Verify & Login' : 'Send OTP',
+            text: _showOtpField ? 'VERIFY & LOGIN' : 'SEND OTP',
           ),
           const SizedBox(height: 24),
           _buildGuestButton(),
@@ -230,22 +233,23 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         children: [
           const SizedBox(height: 20),
           Text(
-            'Sign In',
-            style: GoogleFonts.poppins(
-              fontSize: 28,
+            'SIGN IN',
+            style: GoogleFonts.outfit(
+              fontSize: 24,
               fontWeight: FontWeight.bold,
+              letterSpacing: 1,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Use your email and password to login',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.outfit(
               fontSize: 14,
               color: Colors.grey[600],
             ),
           ),
           const SizedBox(height: 40),
-          _buildLabel('Email Address'),
+          _buildLabel('EMAIL ADDRESS'),
           const SizedBox(height: 8),
           TextField(
             controller: _emailController,
@@ -253,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             decoration: _buildInputDecoration(hint: 'Enter your email'),
           ),
           const SizedBox(height: 16),
-          _buildLabel('Password'),
+          _buildLabel('PASSWORD'),
           const SizedBox(height: 8),
           TextField(
             controller: _passwordController,
@@ -264,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           const SizedBox(height: 32),
           _buildActionButton(
             onPressed: _isLoading ? null : _loginWithEmail,
-            text: 'Login',
+            text: 'LOGIN',
           ),
           const SizedBox(height: 16),
           Center(
@@ -277,7 +281,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               },
               child: Text(
                 "Don't have an account? Sign Up",
-                style: GoogleFonts.poppins(color: Colors.deepPurple),
+                style: GoogleFonts.outfit(color: const Color(0xFFD4AF37)),
               ),
             ),
           ),
@@ -291,9 +295,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   Widget _buildLabel(String text) {
     return Text(
       text,
-      style: GoogleFonts.poppins(
-        fontWeight: FontWeight.w600,
-        fontSize: 14,
+      style: GoogleFonts.outfit(
+        fontWeight: FontWeight.bold,
+        fontSize: 12,
+        letterSpacing: 0.5,
       ),
     );
   }
@@ -303,23 +308,23 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       hintText: hint,
       prefixText: prefix,
       prefixStyle: prefix != null
-          ? GoogleFonts.poppins(
+          ? GoogleFonts.outfit(
               color: Colors.black87,
               fontWeight: FontWeight.w600,
             )
           : null,
       counterText: '',
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(0),
         borderSide: BorderSide(color: Colors.grey[300]!),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(0),
         borderSide: BorderSide(color: Colors.grey[300]!),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+        borderRadius: BorderRadius.circular(0),
+        borderSide: const BorderSide(color: Colors.black, width: 1.5),
       ),
     );
   }
@@ -330,7 +335,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.red[50],
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(0),
       ),
       child: Row(
         children: [
@@ -339,7 +344,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           Expanded(
             child: Text(
               _error!,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.outfit(
                 color: Colors.red[700],
                 fontSize: 13,
               ),
@@ -356,11 +361,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: Colors.black,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(0),
           ),
           elevation: 0,
         ),
@@ -375,9 +380,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               )
             : Text(
                 text,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
+                style: GoogleFonts.outfit(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  letterSpacing: 1,
                 ),
               ),
       ),
@@ -390,17 +396,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       child: OutlinedButton(
         onPressed: _loginAsGuest,
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 18),
           side: BorderSide(color: Colors.grey[300]!),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(0),
           ),
         ),
         child: Text(
-          'Continue as Guest',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
+          'CONTINUE AS GUEST',
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.bold,
             color: Colors.grey[700],
+            fontSize: 14,
+            letterSpacing: 1,
           ),
         ),
       ),

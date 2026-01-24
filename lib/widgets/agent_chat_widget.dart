@@ -1,0 +1,226 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../models/custom_design.dart';
+import '../services/ai_agent_service.dart';
+
+class AgentChatWidget extends StatefulWidget {
+  final CustomDesign currentDesign;
+  final Function(CustomDesign) onDesignUpdate;
+
+  const AgentChatWidget({
+    super.key,
+    required this.currentDesign,
+    required this.onDesignUpdate,
+  });
+
+  @override
+  State<AgentChatWidget> createState() => _AgentChatWidgetState();
+}
+
+class _AgentChatWidgetState extends State<AgentChatWidget> {
+  final AIAgentService _aiService = AIAgentService();
+  final TextEditingController _textController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  
+  bool _isOpen = false;
+  bool _isLoading = false;
+  final List<Map<String, String>> _messages = [
+    {'role': 'agent', 'text': 'Hi! I\'m DesignBot. Tell me what you want to design! 🎨'}
+  ];
+
+  Future<void> _handleSubmitted(String text) async {
+    if (text.trim().isEmpty) return;
+
+    _textController.clear();
+    setState(() {
+      _messages.add({'role': 'user', 'text': text});
+      _isLoading = true;
+    });
+    _scrollToBottom();
+
+    try {
+      final response = await _aiService.sendMessage(text, widget.currentDesign);
+      
+      setState(() {
+        _isLoading = false;
+        _messages.add({'role': 'agent', 'text': response.text});
+      });
+      _scrollToBottom();
+
+      if (response.updatedDesign != null) {
+        widget.onDesignUpdate(response.updatedDesign!);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Design updated by AI! ✨')),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _messages.add({'role': 'agent', 'text': 'Oops, something went wrong.'});
+      });
+    }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 20,
+      right: 20,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Chat Window
+          if (_isOpen)
+            Container(
+              width: 300,
+              height: 400,
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  // Header
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'DesignBot AI',
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                          onPressed: () => setState(() => _isOpen = false),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Messages
+                  Expanded(
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: _messages.length,
+                      itemBuilder: (context, index) {
+                        final msg = _messages[index];
+                        final isUser = msg['role'] == 'user';
+                        return Align(
+                          alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isUser ? Colors.black : Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12).copyWith(
+                                bottomLeft: isUser ? const Radius.circular(12) : const Radius.circular(0),
+                                bottomRight: isUser ? const Radius.circular(0) : const Radius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              msg['text']!,
+                              style: TextStyle(
+                                color: isUser ? Colors.white : Colors.black,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  
+                  // Loading Indicator
+                  if (_isLoading)
+                    Container(
+                      padding: const EdgeInsets.only(left: 16, bottom: 8),
+                      alignment: Alignment.centerLeft,
+                      child: const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                      ),
+                    ),
+
+                  // Input
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _textController,
+                            decoration: InputDecoration(
+                              hintText: 'Type a message...',
+                              hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade400),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade50,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            ),
+                            style: const TextStyle(fontSize: 13),
+                            onSubmitted: _handleSubmitted,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        CircleAvatar(
+                          backgroundColor: Colors.black,
+                          radius: 18,
+                          child: IconButton(
+                            icon: const Icon(Icons.send, color: Colors.white, size: 16),
+                            onPressed: () => _handleSubmitted(_textController.text),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // Floating Button
+          FloatingActionButton(
+            onPressed: () => setState(() => _isOpen = !_isOpen),
+            backgroundColor: Colors.black,
+            child: const Icon(Icons.auto_awesome, color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+}

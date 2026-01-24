@@ -1,0 +1,322 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../models/custom_design.dart';
+import '../models/product.dart';
+import '../services/cart_service.dart';
+import '../widgets/safe_network_image.dart';
+import '../widgets/agent_chat_widget.dart';
+
+class DesignStudioScreen extends StatefulWidget {
+  const DesignStudioScreen({super.key});
+
+  @override
+  State<DesignStudioScreen> createState() => _DesignStudioScreenState();
+}
+
+class _DesignStudioScreenState extends State<DesignStudioScreen> {
+  CustomDesign _design = CustomDesign();
+  
+  // Dummy product for the base t-shirt
+  final Product _baseProduct = Product(
+    id: "custom-tee-001",
+    title: "Men's Custom T-Shirt",
+    slug: "mens-custom-tee",
+    description: "A unique T-Shirt designed by you.",
+    price: 29.99,
+    imageUrl: "https://raw.githubusercontent.com/yemon/react-native-tshirt-design/master/assets/images/tshirt_white.png",
+    categoryId: "custom",
+    stockStatus: 'inStock',
+  );
+  
+  final List<Color> _tShirtColors = [
+    Colors.white,
+    Colors.black,
+    Colors.grey,
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'DESIGN STUDIO',
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            fontSize: 16,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.read<CartService>().addToCart(
+                _baseProduct,
+                customDesign: _design,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Design added to cart! 🎨')),
+              );
+              Navigator.pop(context);
+            },
+            child: Text(
+              'ADD TO CART',
+              style: GoogleFonts.outfit(
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFFD4AF37), // Gold
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              // Canvas Area
+              Expanded(
+                flex: 3,
+                child: Container(
+                  width: double.infinity,
+                  color: Colors.grey.shade50,
+                  child: Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Base T-Shirt Image (Using a color filter for tinting)
+                        ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                            Color(int.parse(_design.baseColor)),
+                            BlendMode.modulate,
+                          ),
+                          child: SafeNetworkImage(
+                            imageUrl: 'https://raw.githubusercontent.com/yemon/react-native-tshirt-design/master/assets/images/tshirt_white.png', 
+                            width: 300,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        
+                        // Design Overlay (Text)
+                        if (_design.text.isNotEmpty)
+                          Positioned(
+                            left: 100 + _design.textX, 
+                            top: 100 + _design.textY,
+                            child: Draggable(
+                              feedback: Material(
+                                color: Colors.transparent,
+                                child: _buildTextOverlay(),
+                              ),
+                              childWhenDragging: Container(),
+                              onDragEnd: (details) {
+                                // In a real app, convert global position to local relative to container
+                              },
+                              child: _buildTextOverlay(),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Tools Panel
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        offset: const Offset(0, -5),
+                        blurRadius: 20,
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'CUSTOMIZE',
+                          style: GoogleFonts.outfit(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        
+                        // Color Selector
+                        SizedBox(
+                          height: 50,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _tShirtColors.length,
+                            separatorBuilder: (_, __) => const SizedBox(width: 12),
+                            itemBuilder: (context, index) {
+                              final color = _tShirtColors[index];
+                              final isSelected = Color(int.parse(_design.baseColor)).value == color.value;
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _design = _design.copyWith(baseColor: '0x${color.value.toRadixString(16).toUpperCase()}');
+                                  });
+                                },
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected ? const Color(0xFFD4AF37) : Colors.grey.shade300,
+                                      width: isSelected ? 3 : 1,
+                                    ),
+                                    boxShadow: [
+                                      if (isSelected)
+                                        BoxShadow(
+                                          color: color.withOpacity(0.4),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 24),
+                        
+                        // Action Buttons
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: _showTextEditor,
+                                icon: const Icon(Icons.text_fields),
+                                label: const Text('ADD TEXT'),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  side: const BorderSide(color: Colors.black),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  // TODO: Implement sticker picker
+                                },
+                                icon: const Icon(Icons.emoji_emotions_outlined),
+                                label: const Text('STICKER'),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  side: const BorderSide(color: Colors.black),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          
+          // AI Agent Chat Widget
+          AgentChatWidget(
+            currentDesign: _design,
+            onDesignUpdate: (newDesign) {
+              setState(() {
+                _design = newDesign;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextOverlay() {
+    return Text(
+      _design.text,
+      style: GoogleFonts.outfit(
+        fontSize: _design.fontSize,
+        fontWeight: FontWeight.bold,
+        color: Color(int.parse(_design.textColor)),
+      ),
+    );
+  }
+
+  void _showTextEditor() {
+    final textController = TextEditingController(text: _design.text);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 24,
+          right: 24,
+          top: 24,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Add Text',
+              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: textController,
+              decoration: const InputDecoration(
+                hintText: 'Enter your text',
+                border: OutlineInputBorder(),
+              ),
+              autofocus: true,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _design = _design.copyWith(text: textController.text);
+                  });
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                ),
+                child: const Text('APPLY'),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+}
