@@ -1,11 +1,12 @@
 import 'package:flutter_sanity/flutter_sanity.dart';
 import '../models/product.dart';
 import '../models/category.dart';
+import '../config/gokwik_config.dart';
 
 class SanityService {
   final SanityClient client = SanityClient(
-    projectId: '',
-    dataset: 'production',
+    projectId: SanityConfig.projectId,
+    dataset: SanityConfig.dataset,
     useCdn: false,
   );
 
