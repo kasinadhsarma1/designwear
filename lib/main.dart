@@ -10,15 +10,13 @@ import 'services/auth_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Load environment variables
   await dotenv.load(fileName: ".env");
 
   // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const DesignWearApp());
 }
 
@@ -30,11 +28,13 @@ class DesignWearApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CartService()),
-        ChangeNotifierProvider(create: (_) {
-          final authService = AuthService();
-          authService.init();
-          return authService;
-        }),
+        ChangeNotifierProvider(
+          create: (_) {
+            final authService = AuthService();
+            authService.init();
+            return authService;
+          },
+        ),
       ],
       child: MaterialApp(
         title: 'Design Wear',

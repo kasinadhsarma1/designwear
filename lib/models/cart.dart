@@ -35,7 +35,7 @@ class Cart {
   double get subtotal => items.fold(0, (sum, item) => sum + item.total);
 
   double taxRate = 0.18; // Default 18%
-  
+
   void setTaxRate(double rate) {
     taxRate = rate / 100.0;
   }
@@ -44,31 +44,39 @@ class Cart {
 
   double get total => subtotal + tax;
 
-  void addItem(Product product, {int quantity = 1, String? size, CustomDesign? customDesign}) {
+  void addItem(
+    Product product, {
+    int quantity = 1,
+    String? size,
+    CustomDesign? customDesign,
+  }) {
     // If it's a custom design, we might treat it as unique or check equality of design
     // For simplicity, let's say custom designs are always unique entries for now
     if (customDesign != null) {
-      items.add(CartItem(
-        product: product,
-        quantity: quantity,
-        selectedSize: size,
-        customDesign: customDesign,
-      ));
+      items.add(
+        CartItem(
+          product: product,
+          quantity: quantity,
+          selectedSize: size,
+          customDesign: customDesign,
+        ),
+      );
       return;
     }
 
     final existingIndex = items.indexWhere(
-      (item) => item.product.id == product.id && item.selectedSize == size && item.customDesign == null,
+      (item) =>
+          item.product.id == product.id &&
+          item.selectedSize == size &&
+          item.customDesign == null,
     );
 
     if (existingIndex >= 0) {
       items[existingIndex].quantity += quantity;
     } else {
-      items.add(CartItem(
-        product: product,
-        quantity: quantity,
-        selectedSize: size,
-      ));
+      items.add(
+        CartItem(product: product, quantity: quantity, selectedSize: size),
+      );
     }
   }
 

@@ -21,8 +21,12 @@ class VirtualTryOnService {
     required Uint8List personImageBytes,
     required Uint8List clothingImageBytes,
   }) async {
-    if (_apiKey == null || _apiKey!.isEmpty || _apiKey == 'your_gemini_api_key_here') {
-      throw VirtualTryOnException('Gemini API key not configured. Please add GEMINI_API_KEY to .env file');
+    if (_apiKey == null ||
+        _apiKey!.isEmpty ||
+        _apiKey == 'your_gemini_api_key_here') {
+      throw VirtualTryOnException(
+        'Gemini API key not configured. Please add GEMINI_API_KEY to .env file',
+      );
     }
 
     try {
@@ -34,7 +38,8 @@ class VirtualTryOnService {
           {
             'parts': [
               {
-                'text': '''You are a fashion AI assistant specializing in virtual try-on. 
+                'text':
+                    '''You are a fashion AI assistant specializing in virtual try-on. 
                 
 Your task: Take the clothing item from the second image and realistically place it on the person in the first image.
 
@@ -45,46 +50,41 @@ Requirements:
 - Keep the background from the person's original photo
 - Make the result look like a real photograph
 
-Generate the final image showing the person wearing the clothing item.'''
+Generate the final image showing the person wearing the clothing item.''',
               },
               {
-                'inlineData': {
-                  'mimeType': 'image/jpeg',
-                  'data': personBase64,
-                }
+                'inlineData': {'mimeType': 'image/jpeg', 'data': personBase64},
               },
               {
                 'inlineData': {
                   'mimeType': 'image/jpeg',
                   'data': clothingBase64,
-                }
-              }
-            ]
-          }
+                },
+              },
+            ],
+          },
         ],
         'generationConfig': {
           'responseModalities': ['image', 'text'],
           'temperature': 0.4,
-        }
+        },
       };
 
       final response = await http.post(
         Uri.parse('$_baseUrl?key=$_apiKey'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody),
       );
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        
+
         // Extract the generated image from the response
         final candidates = responseData['candidates'] as List?;
         if (candidates != null && candidates.isNotEmpty) {
           final content = candidates[0]['content'];
           final parts = content['parts'] as List?;
-          
+
           if (parts != null) {
             for (final part in parts) {
               if (part['inlineData'] != null) {
@@ -94,7 +94,7 @@ Generate the final image showing the person wearing the clothing item.'''
             }
           }
         }
-        
+
         throw VirtualTryOnException('No image generated in response');
       } else {
         final errorData = jsonDecode(response.body);

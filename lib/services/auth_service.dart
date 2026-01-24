@@ -8,13 +8,7 @@ class User {
   final String? name;
   final bool isGuest;
 
-  User({
-    this.id,
-    this.phone,
-    this.email,
-    this.name,
-    this.isGuest = false,
-  });
+  User({this.id, this.phone, this.email, this.name, this.isGuest = false});
 
   bool get isLoggedIn => id != null;
 }
@@ -61,7 +55,11 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<void> signUpWithEmail(String email, String password, String name) async {
+  Future<void> signUpWithEmail(
+    String email,
+    String password,
+    String name,
+  ) async {
     _isLoading = true;
     notifyListeners();
     try {

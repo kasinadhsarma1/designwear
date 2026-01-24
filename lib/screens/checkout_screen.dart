@@ -99,9 +99,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 Text(
                   'Your order has been placed successfully.\nYou will receive a confirmation shortly.',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    color: Colors.grey[600],
-                  ),
+                  style: GoogleFonts.poppins(color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -178,34 +176,45 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   builder: (context, cartService, child) {
                     return Column(
                       children: [
-                        ...cartService.items.map((item) => Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      '${item.product.title} x${item.quantity}',
-                                      style: GoogleFonts.outfit(fontSize: 14),
-                                    ),
+                        ...cartService.items.map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    '${item.product.title} x${item.quantity}',
+                                    style: GoogleFonts.outfit(fontSize: 14),
                                   ),
-                                  Text(
-                                    '₹${item.total.toStringAsFixed(2)}',
-                                    style: GoogleFonts.outfit(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
+                                ),
+                                Text(
+                                  '₹${item.total.toStringAsFixed(2)}',
+                                  style: GoogleFonts.outfit(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
-                                ],
-                              ),
-                            )),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                         const Divider(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Subtotal', style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey[600])),
+                            Text(
+                              'Subtotal',
+                              style: GoogleFonts.outfit(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
                             Text(
                               '₹${cartService.subtotal.toStringAsFixed(2)}',
-                              style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.bold),
+                              style: GoogleFonts.outfit(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -213,10 +222,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Tax (${cartService.currentTaxRate}% GST)', style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey[600])),
+                            Text(
+                              'Tax (${cartService.currentTaxRate}% GST)',
+                              style: GoogleFonts.outfit(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
                             Text(
                               '₹${cartService.tax.toStringAsFixed(2)}',
-                              style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.bold),
+                              style: GoogleFonts.outfit(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -352,7 +370,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    Icon(Icons.verified_user, size: 16, color: Colors.grey[600]),
+                    Icon(
+                      Icons.verified_user,
+                      size: 16,
+                      color: Colors.grey[600],
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '100% Safe',

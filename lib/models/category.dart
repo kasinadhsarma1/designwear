@@ -19,7 +19,8 @@ class Category {
       title: map['title'] ?? '',
       slug: map['slug']?['current'] ?? '',
       description: map['description'] ?? '',
-      imageUrl: map['imageUrl'], // We'll fetch this using Sanity's image URL builder logic
+      imageUrl:
+          map['imageUrl'], // We'll fetch this using Sanity's image URL builder logic
     );
   }
 }

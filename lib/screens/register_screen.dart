@@ -26,7 +26,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    if (_nameController.text.isEmpty || _emailController.text.isEmpty || _passwordController.text.isEmpty) {
+    if (_nameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
       setState(() => _error = 'Please fill all fields');
       return;
     }
@@ -38,10 +40,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       await context.read<AuthService>().signUpWithEmail(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-            _nameController.text.trim(),
-          );
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        _nameController.text.trim(),
+      );
       if (mounted) {
         Navigator.pop(context, true);
       }
@@ -166,10 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -211,10 +210,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Expanded(
             child: Text(
               _error!,
-              style: GoogleFonts.poppins(
-                color: Colors.red[700],
-                fontSize: 13,
-              ),
+              style: GoogleFonts.poppins(color: Colors.red[700], fontSize: 13),
             ),
           ),
         ],

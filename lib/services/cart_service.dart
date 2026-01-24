@@ -22,7 +22,7 @@ class CartService extends ChangeNotifier {
   bool get isEmpty => _cart.isEmpty;
 
   bool get isNotEmpty => _cart.isNotEmpty;
-  
+
   final SanityService _sanityService = SanityService();
   double _currentTaxRate = 18.0;
 
@@ -44,8 +44,18 @@ class CartService extends ChangeNotifier {
     }
   }
 
-  void addToCart(Product product, {int quantity = 1, String? size, CustomDesign? customDesign}) {
-    _cart.addItem(product, quantity: quantity, size: size, customDesign: customDesign);
+  void addToCart(
+    Product product, {
+    int quantity = 1,
+    String? size,
+    CustomDesign? customDesign,
+  }) {
+    _cart.addItem(
+      product,
+      quantity: quantity,
+      size: size,
+      customDesign: customDesign,
+    );
     notifyListeners();
   }
 

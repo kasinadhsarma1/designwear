@@ -5,9 +5,9 @@ class CustomDesign {
   final double textY;
   final double fontSize;
   final String textColor; // Hex string
-  
+
   // Future: Stickers list
-  
+
   CustomDesign({
     this.baseColor = "0xFFFFFFFF", // Default white
     this.text = "",
@@ -16,7 +16,7 @@ class CustomDesign {
     this.fontSize = 20,
     this.textColor = "0xFF000000",
   });
-  
+
   CustomDesign copyWith({
     String? baseColor,
     String? text,

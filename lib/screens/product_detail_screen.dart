@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../widgets/safe_network_image.dart';
@@ -44,10 +44,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               tag: widget.product.id,
               child: Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.55, // Larger image
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                ),
+                height:
+                    MediaQuery.of(context).size.height * 0.55, // Larger image
+                decoration: BoxDecoration(color: Colors.grey.shade50),
                 child: widget.product.imageUrl != null
                     ? SafeNetworkImage(
                         imageUrl: widget.product.imageUrl!,
@@ -56,10 +55,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     : const Icon(Icons.image_not_supported, size: 100),
               ),
             ),
-            
+
             // Virtual Try-On Button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 16.0,
+              ),
               child: SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -67,11 +69,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => VirtualTryOnScreen(product: widget.product),
+                        builder: (_) =>
+                            VirtualTryOnScreen(product: widget.product),
                       ),
                     );
                   },
-                  icon: const Icon(Icons.auto_awesome, color: Color(0xFFD4AF37)), // Gold
+                  icon: const Icon(
+                    Icons.auto_awesome,
+                    color: Color(0xFFD4AF37),
+                  ), // Gold
                   label: Text(
                     'Try It On Virtually ✨',
                     style: GoogleFonts.outfit(
@@ -82,7 +88,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Color(0xFFD4AF37), width: 1), // Gold border
+                    side: const BorderSide(
+                      color: Color(0xFFD4AF37),
+                      width: 1,
+                    ), // Gold border
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0), // Sharp edges
                     ),
@@ -99,7 +108,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(
+                      Text(
                         widget.product.title.toUpperCase(),
                         style: GoogleFonts.outfit(
                           fontSize: 24,
@@ -121,9 +130,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   const SizedBox(height: 16),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
-                      color: _getStockColor(widget.product.stockStatus).withValues(alpha: 0.1),
+                      color: _getStockColor(
+                        widget.product.stockStatus,
+                      ).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -136,7 +150,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Size Selection
                   Text(
                     'Select Size',
@@ -152,7 +166,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       final isSelected = _selectedSize == size;
                       return GestureDetector(
                         onTap: () {
-                           setState(() {
+                          setState(() {
                             _selectedSize = isSelected ? null : size;
                           });
                         },
@@ -162,10 +176,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: isSelected ? Colors.black : Colors.grey.shade300,
+                              color: isSelected
+                                  ? Colors.black
+                                  : Colors.grey.shade300,
                               width: 1.5,
                             ),
-                            color: isSelected ? Colors.black : Colors.transparent,
+                            color: isSelected
+                                ? Colors.black
+                                : Colors.transparent,
                           ),
                           alignment: Alignment.center,
                           child: Text(
@@ -179,7 +197,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       );
                     }).toList(),
                   ),
-                  
+
                   const SizedBox(height: 24),
                   Text(
                     'Description',
@@ -276,22 +294,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (_selectedSize == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Please select a size',
-            style: GoogleFonts.poppins(),
-          ),
+          content: Text('Please select a size', style: GoogleFonts.poppins()),
           backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
       return;
     }
 
-    context.read<CartService>().addToCart(
-      widget.product,
-      size: _selectedSize,
-    );
+    context.read<CartService>().addToCart(widget.product, size: _selectedSize);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -299,10 +313,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           children: [
             const Icon(Icons.check_circle, color: Colors.white),
             const SizedBox(width: 8),
-            Text(
-              'Added to cart!',
-              style: GoogleFonts.poppins(),
-            ),
+            Text('Added to cart!', style: GoogleFonts.poppins()),
           ],
         ),
         backgroundColor: Colors.green,
@@ -326,23 +337,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (_selectedSize == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Please select a size',
-            style: GoogleFonts.poppins(),
-          ),
+          content: Text('Please select a size', style: GoogleFonts.poppins()),
           backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
       return;
     }
 
     // Add to cart and go directly to cart
-    context.read<CartService>().addToCart(
-      widget.product,
-      size: _selectedSize,
-    );
+    context.read<CartService>().addToCart(widget.product, size: _selectedSize);
 
     Navigator.push(
       context,

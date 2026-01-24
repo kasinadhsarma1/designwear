@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import '../widgets/safe_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
@@ -248,20 +248,20 @@ class _VirtualTryOnScreenState extends State<VirtualTryOnScreen>
         );
         return;
       }
-      
+
       final directory = await getTemporaryDirectory();
       final file = File(
-          '${directory.path}/tryon_${DateTime.now().millisecondsSinceEpoch}.jpg');
+        '${directory.path}/tryon_${DateTime.now().millisecondsSinceEpoch}.jpg',
+      );
       await file.writeAsBytes(_generatedImage!);
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        text: 'Check out how I look in ${widget.product.title}! 👕✨',
-      );
+      await Share.shareXFiles([
+        XFile(file.path),
+      ], text: 'Check out how I look in ${widget.product.title}! 👕✨');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to share: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to share: $e')));
     }
   }
 
@@ -384,18 +384,12 @@ class _VirtualTryOnScreenState extends State<VirtualTryOnScreen>
       children: [
         Text(
           'Your Photo',
-          style: GoogleFonts.outfit(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
           'Upload a full-body photo for best results',
-          style: GoogleFonts.outfit(
-            fontSize: 14,
-            color: Colors.grey.shade600,
-          ),
+          style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey.shade600),
         ),
         const SizedBox(height: 16),
         GestureDetector(
@@ -440,7 +434,10 @@ class _VirtualTryOnScreenState extends State<VirtualTryOnScreen>
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
                           child: IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.deepPurple),
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.deepPurple,
+                            ),
                             onPressed: _showImageSourceDialog,
                           ),
                         ),
@@ -473,7 +470,7 @@ class _VirtualTryOnScreenState extends State<VirtualTryOnScreen>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        kIsWeb 
+                        kIsWeb
                             ? 'Choose from your files'
                             : 'Take a selfie or choose from gallery',
                         style: GoogleFonts.outfit(
@@ -553,10 +550,7 @@ class _VirtualTryOnScreenState extends State<VirtualTryOnScreen>
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image.memory(
-              _generatedImage!,
-              fit: BoxFit.cover,
-            ),
+            child: Image.memory(_generatedImage!, fit: BoxFit.cover),
           ),
         ),
       ],
@@ -618,9 +612,7 @@ class _VirtualTryOnScreenState extends State<VirtualTryOnScreen>
                       const Icon(Icons.auto_awesome),
                       const SizedBox(width: 8),
                       Text(
-                        _generatedImage != null
-                            ? 'Try Again'
-                            : 'Try It On',
+                        _generatedImage != null ? 'Try Again' : 'Try It On',
                         style: GoogleFonts.outfit(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

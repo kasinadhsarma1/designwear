@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../widgets/safe_network_image.dart';
 import '../services/cart_service.dart';
 import '../models/cart.dart';
@@ -67,9 +66,7 @@ class CartScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Add some products to get started!',
-            style: GoogleFonts.poppins(
-              color: Colors.grey[500],
-            ),
+            style: GoogleFonts.poppins(color: Colors.grey[500]),
           ),
           const SizedBox(height: 32),
           ElevatedButton(
@@ -107,12 +104,17 @@ class CartScreen extends StatelessWidget {
   }
 
   Widget _buildCartItem(
-      BuildContext context, CartService cartService, CartItem item) {
+    BuildContext context,
+    CartService cartService,
+    CartItem item,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.black12)), // Minimal separator
+        border: Border(
+          bottom: BorderSide(color: Colors.black12),
+        ), // Minimal separator
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 24),
@@ -162,14 +164,20 @@ class CartScreen extends StatelessWidget {
                       ),
                     ),
                   if (item.customDesign != null)
-                   Padding(
+                    Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFD4AF37).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: const Color(0xFFD4AF37), width: 0.5),
+                          border: Border.all(
+                            color: const Color(0xFFD4AF37),
+                            width: 0.5,
+                          ),
                         ),
                         child: Text(
                           'CUSTOM DESIGN',
@@ -226,7 +234,9 @@ class CartScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
                           '${item.quantity}',
-                          style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
+                          style: GoogleFonts.outfit(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       InkWell(
@@ -287,7 +297,10 @@ class CartScreen extends StatelessWidget {
               children: [
                 Text(
                   'Tax (${cartService.currentTaxRate}% GST)',
-                  style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey[600]),
+                  style: GoogleFonts.outfit(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
                 ),
                 Text(
                   '₹${cartService.tax.toStringAsFixed(2)}',

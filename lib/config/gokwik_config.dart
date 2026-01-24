@@ -10,7 +10,8 @@ class GoKwikConfig {
   static String get apiKey => dotenv.env['GOKWIK_API_KEY'] ?? '';
 
   /// Environment: 'sandbox' for testing, 'production' for live
-  static String get environment => dotenv.env['GOKWIK_ENVIRONMENT'] ?? 'sandbox';
+  static String get environment =>
+      dotenv.env['GOKWIK_ENVIRONMENT'] ?? 'sandbox';
 
   /// Check if we're in sandbox mode
   static bool get isSandbox => environment == 'sandbox';

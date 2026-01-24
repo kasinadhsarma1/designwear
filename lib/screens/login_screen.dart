@@ -11,7 +11,8 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _phoneController = TextEditingController();
   final _otpController = TextEditingController();
@@ -69,9 +70,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
     try {
       await context.read<AuthService>().loginWithPhone(
-            _phoneController.text,
-            _otpController.text,
-          );
+        _phoneController.text,
+        _otpController.text,
+      );
 
       if (mounted) {
         Navigator.pop(context, true);
@@ -98,9 +99,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
     try {
       await context.read<AuthService>().signInWithEmail(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-          );
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
       if (mounted) {
         Navigator.pop(context, true);
       }
@@ -144,10 +145,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       body: SafeArea(
         child: TabBarView(
           controller: _tabController,
-          children: [
-            _buildPhoneLogin(),
-            _buildEmailLogin(),
-          ],
+          children: [_buildPhoneLogin(), _buildEmailLogin()],
         ),
       ),
     );
@@ -173,10 +171,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             _showOtpField
                 ? 'Enter the 6-digit code sent to +91 ${_phoneController.text}'
                 : 'Sign in with your phone number to continue',
-            style: GoogleFonts.outfit(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 40),
           if (!_showOtpField) ...[
@@ -209,13 +204,18 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             const SizedBox(height: 16),
             TextButton(
               onPressed: () => setState(() => _showOtpField = false),
-              child: Text('Change phone number', style: GoogleFonts.outfit(color: const Color(0xFFD4AF37))),
+              child: Text(
+                'Change phone number',
+                style: GoogleFonts.outfit(color: const Color(0xFFD4AF37)),
+              ),
             ),
           ],
           if (_error != null) _buildErrorBox(),
           const SizedBox(height: 32),
           _buildActionButton(
-            onPressed: _isLoading ? null : (_showOtpField ? _verifyOtp : _sendOtp),
+            onPressed: _isLoading
+                ? null
+                : (_showOtpField ? _verifyOtp : _sendOtp),
             text: _showOtpField ? 'VERIFY & LOGIN' : 'SEND OTP',
           ),
           const SizedBox(height: 24),
@@ -243,10 +243,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           const SizedBox(height: 8),
           Text(
             'Use your email and password to login',
-            style: GoogleFonts.outfit(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 40),
           _buildLabel('EMAIL ADDRESS'),
@@ -276,7 +273,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const RegisterScreen(),
+                  ),
                 );
               },
               child: Text(
@@ -303,7 +302,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
   }
 
-  InputDecoration _buildInputDecoration({required String hint, String? prefix}) {
+  InputDecoration _buildInputDecoration({
+    required String hint,
+    String? prefix,
+  }) {
     return InputDecoration(
       hintText: hint,
       prefixText: prefix,
@@ -344,10 +346,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           Expanded(
             child: Text(
               _error!,
-              style: GoogleFonts.outfit(
-                color: Colors.red[700],
-                fontSize: 13,
-              ),
+              style: GoogleFonts.outfit(color: Colors.red[700], fontSize: 13),
             ),
           ),
         ],
@@ -355,7 +354,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildActionButton({required VoidCallback? onPressed, required String text}) {
+  Widget _buildActionButton({
+    required VoidCallback? onPressed,
+    required String text,
+  }) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -364,9 +366,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           backgroundColor: Colors.black,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 18),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
           elevation: 0,
         ),
         child: _isLoading
@@ -398,9 +398,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 18),
           side: BorderSide(color: Colors.grey[300]!),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
         ),
         child: Text(
           'CONTINUE AS GUEST',

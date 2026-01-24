@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/safe_network_image.dart';
 import 'package:provider/provider.dart';
@@ -78,7 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(builder: (_) => const CartScreen()),
                       );
                     },
-                    icon: const Icon(Icons.shopping_bag_outlined, color: Color(0xFF1A1A1A)),
+                    icon: const Icon(
+                      Icons.shopping_bag_outlined,
+                      color: Color(0xFF1A1A1A),
+                    ),
                   ),
                   if (cartService.itemCount > 0)
                     Positioned(
@@ -122,8 +125,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-
   Widget _buildHeroSection() {
     return Container(
       width: double.infinity,
@@ -131,9 +132,13 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(0), // Sharp edges or minimal radius for modern look
+        borderRadius: BorderRadius.circular(
+          0,
+        ), // Sharp edges or minimal radius for modern look
         image: const DecorationImage(
-          image: NetworkImage('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop'),
+          image: NetworkImage(
+            'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop',
+          ),
           fit: BoxFit.cover,
           opacity: 0.7,
         ),
@@ -142,14 +147,11 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Container(
             decoration: BoxDecoration(
-             gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [
-                Colors.black.withOpacity(0.8),
-                Colors.transparent,
-              ],
-             ),
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+              ),
             ),
           ),
           Padding(
@@ -183,8 +185,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
                   ),
                   child: const Text('SHOP NOW'),
                 ),
@@ -210,7 +217,9 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: Colors.black,
           image: const DecorationImage(
-            image: NetworkImage('https://images.unsplash.com/photo-1503342394128-c104d54dba01?q=80&w=2069&auto=format&fit=crop'), // Fashion/Design related image
+            image: NetworkImage(
+              'https://images.unsplash.com/photo-1503342394128-c104d54dba01?q=80&w=2069&auto=format&fit=crop',
+            ), // Fashion/Design related image
             fit: BoxFit.cover,
             opacity: 0.4,
           ),
@@ -230,7 +239,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: const Color(0xFFD4AF37)),
                 ),
@@ -259,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             title.toUpperCase(),
             style: GoogleFonts.outfit(
-              fontSize: 14, 
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
               color: Colors.black87,
@@ -273,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: const Color(0xFFD4AF37),
               decoration: TextDecoration.underline,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -284,10 +296,16 @@ class _HomeScreenState extends State<HomeScreen> {
       future: _categoriesFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()));
+          return const SizedBox(
+            height: 100,
+            child: Center(child: CircularProgressIndicator()),
+          );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const SizedBox(height: 100, child: Center(child: Text('No categories found')));
+          return const SizedBox(
+            height: 100,
+            child: Center(child: Text('No categories found')),
+          );
         }
         return SizedBox(
           height: 50,
@@ -299,18 +317,21 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final category = snapshot.data![index];
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black12),
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: Text(
-                  category.title, 
+                  category.title,
                   style: GoogleFonts.outfit(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black87
-                  )
+                    color: Colors.black87,
+                  ),
                 ),
               );
             },

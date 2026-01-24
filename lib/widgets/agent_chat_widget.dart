@@ -21,11 +21,14 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
   final AIAgentService _aiService = AIAgentService();
   final TextEditingController _textController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  
+
   bool _isOpen = false;
   bool _isLoading = false;
   final List<Map<String, String>> _messages = [
-    {'role': 'agent', 'text': 'Hi! I\'m DesignBot. Tell me what you want to design! 🎨'}
+    {
+      'role': 'agent',
+      'text': 'Hi! I\'m DesignBot. Tell me what you want to design! 🎨',
+    },
   ];
 
   Future<void> _handleSubmitted(String text) async {
@@ -40,7 +43,7 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
 
     try {
       final response = await _aiService.sendMessage(text, widget.currentDesign);
-      
+
       setState(() {
         _isLoading = false;
         _messages.add({'role': 'agent', 'text': response.text});
@@ -106,7 +109,9 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
                     padding: const EdgeInsets.all(16),
                     decoration: const BoxDecoration(
                       color: Colors.black,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,7 +124,11 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                          icon: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                           onPressed: () => setState(() => _isOpen = false),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
@@ -127,7 +136,7 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
                       ],
                     ),
                   ),
-                  
+
                   // Messages
                   Expanded(
                     child: ListView.builder(
@@ -138,15 +147,26 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
                         final msg = _messages[index];
                         final isUser = msg['role'] == 'user';
                         return Align(
-                          alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                          alignment: isUser
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 8),
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
-                              color: isUser ? Colors.black : Colors.grey.shade100,
+                              color: isUser
+                                  ? Colors.black
+                                  : Colors.grey.shade100,
                               borderRadius: BorderRadius.circular(12).copyWith(
-                                bottomLeft: isUser ? const Radius.circular(12) : const Radius.circular(0),
-                                bottomRight: isUser ? const Radius.circular(0) : const Radius.circular(12),
+                                bottomLeft: isUser
+                                    ? const Radius.circular(12)
+                                    : const Radius.circular(0),
+                                bottomRight: isUser
+                                    ? const Radius.circular(0)
+                                    : const Radius.circular(12),
                               ),
                             ),
                             child: Text(
@@ -161,7 +181,7 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
                       },
                     ),
                   ),
-                  
+
                   // Loading Indicator
                   if (_isLoading)
                     Container(
@@ -170,7 +190,10 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
                       child: const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
 
@@ -184,14 +207,20 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
                             controller: _textController,
                             decoration: InputDecoration(
                               hintText: 'Type a message...',
-                              hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade400),
+                              hintStyle: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade400,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25),
                                 borderSide: BorderSide.none,
                               ),
                               filled: true,
                               fillColor: Colors.grey.shade50,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
                             ),
                             style: const TextStyle(fontSize: 13),
                             onSubmitted: _handleSubmitted,
@@ -202,8 +231,13 @@ class _AgentChatWidgetState extends State<AgentChatWidget> {
                           backgroundColor: Colors.black,
                           radius: 18,
                           child: IconButton(
-                            icon: const Icon(Icons.send, color: Colors.white, size: 16),
-                            onPressed: () => _handleSubmitted(_textController.text),
+                            icon: const Icon(
+                              Icons.send,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                            onPressed: () =>
+                                _handleSubmitted(_textController.text),
                           ),
                         ),
                       ],

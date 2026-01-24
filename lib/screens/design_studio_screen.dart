@@ -16,7 +16,7 @@ class DesignStudioScreen extends StatefulWidget {
 
 class _DesignStudioScreenState extends State<DesignStudioScreen> {
   CustomDesign _design = CustomDesign();
-  
+
   // Dummy product for the base t-shirt
   final Product _baseProduct = Product(
     id: "custom-tee-001",
@@ -24,11 +24,12 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
     slug: "mens-custom-tee",
     description: "A unique T-Shirt designed by you.",
     price: 29.99,
-    imageUrl: "https://raw.githubusercontent.com/yemon/react-native-tshirt-design/master/assets/images/tshirt_white.png",
+    imageUrl:
+        "https://raw.githubusercontent.com/yemon/react-native-tshirt-design/master/assets/images/tshirt_white.png",
     categoryId: "custom",
     stockStatus: 'inStock',
   );
-  
+
   final List<Color> _tShirtColors = [
     Colors.white,
     Colors.black,
@@ -100,16 +101,17 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
                             BlendMode.modulate,
                           ),
                           child: SafeNetworkImage(
-                            imageUrl: 'https://raw.githubusercontent.com/yemon/react-native-tshirt-design/master/assets/images/tshirt_white.png', 
+                            imageUrl:
+                                'https://raw.githubusercontent.com/yemon/react-native-tshirt-design/master/assets/images/tshirt_white.png',
                             width: 300,
                             fit: BoxFit.contain,
                           ),
                         ),
-                        
+
                         // Design Overlay (Text)
                         if (_design.text.isNotEmpty)
                           Positioned(
-                            left: 100 + _design.textX, 
+                            left: 100 + _design.textX,
                             top: 100 + _design.textY,
                             child: Draggable(
                               feedback: Material(
@@ -157,21 +159,27 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        
+
                         // Color Selector
                         SizedBox(
                           height: 50,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             itemCount: _tShirtColors.length,
-                            separatorBuilder: (_, __) => const SizedBox(width: 12),
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(width: 12),
                             itemBuilder: (context, index) {
                               final color = _tShirtColors[index];
-                              final isSelected = Color(int.parse(_design.baseColor)).value == color.value;
+                              final isSelected =
+                                  Color(int.parse(_design.baseColor)).value ==
+                                  color.value;
                               return GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    _design = _design.copyWith(baseColor: '0x${color.value.toRadixString(16).toUpperCase()}');
+                                    _design = _design.copyWith(
+                                      baseColor:
+                                          '0x${color.value.toRadixString(16).toUpperCase()}',
+                                    );
                                   });
                                 },
                                 child: Container(
@@ -181,7 +189,9 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
                                     color: color,
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: isSelected ? const Color(0xFFD4AF37) : Colors.grey.shade300,
+                                      color: isSelected
+                                          ? const Color(0xFFD4AF37)
+                                          : Colors.grey.shade300,
                                       width: isSelected ? 3 : 1,
                                     ),
                                     boxShadow: [
@@ -198,9 +208,9 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
                             },
                           ),
                         ),
-                        
+
                         const SizedBox(height: 24),
-                        
+
                         // Action Buttons
                         Row(
                           children: [
@@ -210,9 +220,13 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
                                 icon: const Icon(Icons.text_fields),
                                 label: const Text('ADD TEXT'),
                                 style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
                                   side: const BorderSide(color: Colors.black),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
                                 ),
                               ),
                             ),
@@ -225,9 +239,13 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
                                 icon: const Icon(Icons.emoji_emotions_outlined),
                                 label: const Text('STICKER'),
                                 style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
                                   side: const BorderSide(color: Colors.black),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0),
+                                  ),
                                 ),
                               ),
                             ),
@@ -240,7 +258,7 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
               ),
             ],
           ),
-          
+
           // AI Agent Chat Widget
           AgentChatWidget(
             currentDesign: _design,
@@ -284,7 +302,10 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
           children: [
             Text(
               'Add Text',
-              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 18),
+              style: GoogleFonts.outfit(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
@@ -308,7 +329,9 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0),
+                  ),
                 ),
                 child: const Text('APPLY'),
               ),
