@@ -70,7 +70,9 @@ Output: A single high-quality image of the person wearing the clothing item.''',
           },
         ],
         'generationConfig': {
-          'responseModalities': ['image'], // Nano Banana Pro supports 'image' modality
+          'responseModalities': [
+            'image',
+          ], // Nano Banana Pro supports 'image' modality
           'temperature': 0.3,
           'topK': 40,
           'topP': 0.95,
