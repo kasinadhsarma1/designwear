@@ -105,7 +105,7 @@ class AuthService extends ChangeNotifier {
     if (firebaseUser == null) return;
 
     if (name != null) await firebaseUser.updateDisplayName(name);
-    if (email != null) await firebaseUser.updateEmail(email);
+    if (email != null) await firebaseUser.verifyBeforeUpdateEmail(email);
 
     await _onAuthStateChanged(_auth.currentUser);
   }

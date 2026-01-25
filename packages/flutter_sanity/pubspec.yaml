@@ -1,0 +1,14 @@
+name: flutter_sanity
+description: Dart libary to query the Sanity.io API. Supports running queries and downloading files.
+version: 1.1.0
+homepage: https://github.com/joelrose/flutter_sanity
+repository: https://github.com/joelrose/flutter_sanity
+
+environment:
+  sdk: ">=2.12.0 <4.0.0"
+
+dependencies:
+  http: ">=0.13.4"
+
+dev_dependencies:
+  test: ^1.20.2
