@@ -35,6 +35,12 @@ if [ -f "$FLUTTER_ASSETS_DIR/main.dart.js" ]; then
     sed -i 's|assetBase:""|assetBase:"/flutter-assets/"|g' "$FLUTTER_ASSETS_DIR/main.dart.js"
 fi
 
+# Update flutter_bootstrap.js to use correct entrypointBaseUrl
+if [ -f "$FLUTTER_ASSETS_DIR/flutter_bootstrap.js" ]; then
+    # Patch the load call to include config with entrypointBaseUrl
+    sed -i 's|_flutter.loader.load({|_flutter.loader.load({config:{entrypointBaseUrl:"/flutter-assets/"},|g' "$FLUTTER_ASSETS_DIR/flutter_bootstrap.js"
+fi
+
 # Create Next.js API route for Flutter communication
 mkdir -p "web-next/src/app/api/flutter"
 cat > "web-next/src/app/api/flutter/route.ts" << 'EOF'
