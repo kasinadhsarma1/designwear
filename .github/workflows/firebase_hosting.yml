@@ -1,0 +1,43 @@
+name: Deploy to Firebase Hosting on merge
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install Flutter manually
+        run: |
+          git clone https://github.com/flutter/flutter.git --depth 1 -b stable _flutter
+          echo "$GITHUB_WORKSPACE/_flutter/bin" >> $GITHUB_PATH
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Create .env file
+        run: |
+          mkdir -p assets
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > assets/.env
+          echo "SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }}" >> assets/.env
+          echo "SANITY_DATASET=${{ secrets.SANITY_DATASET }}" >> assets/.env
+
+      - name: Build Web
+        run: flutter build web --release
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DESIGNWEAR_APP_8984 }}'
+          channelId: live
+          projectId: designwear-app-8984
