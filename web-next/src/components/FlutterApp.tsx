@@ -45,7 +45,7 @@ export default function FlutterApp({
 
   const defaultConfig = {
     assetBase: '/flutter-assets/',
-    canvasKitBaseUrl: 'https://unpkg.com/canvaskit-wasm@latest/bin/',
+    canvasKitBaseUrl: '/flutter-assets/canvaskit/',
     renderer: 'canvaskit' as const,
     ...config,
   };
