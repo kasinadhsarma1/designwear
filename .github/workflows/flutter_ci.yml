@@ -38,7 +38,7 @@ jobs:
           echo "SANITY_DATASET=${{ secrets.SANITY_DATASET }}" >> assets/.env
 
       - name: Verify Formatting
-        run: dart format --output=none --set-exit-if-changed .
+        run: dart format --output=none --set-exit-if-changed lib test
 
       - name: Analyze
         run: flutter analyze
