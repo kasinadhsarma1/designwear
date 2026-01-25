@@ -19,7 +19,6 @@ assets/.env
 /ios/Runner/GoogleService-Info.plist
 /lib/firebase_options.dart
 *-firebase-adminsdk-*.json
-*.json
 
 # IntelliJ related
 *.iml

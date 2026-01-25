@@ -1,0 +1,15 @@
+{
+    "name": "designwear-root",
+    "private": true,
+    "workspaces": [
+        "web-next"
+    ],
+    "scripts": {
+        "build": "npm run build --workspace=web-next && rm -rf .next public next.config.ts && mv web-next/.next .next && cp -r web-next/public public && cp web-next/next.config.ts next.config.ts",
+        "dev": "npm run dev --workspace=web-next"
+    },
+    "devDependencies": {
+        "next": "^16.1.4",
+        "typescript": "^5.9.3"
+    }
+}
