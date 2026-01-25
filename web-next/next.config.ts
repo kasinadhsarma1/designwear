@@ -12,11 +12,6 @@ const nextConfig: NextConfig = {
         source: '/flutter-assets',
         destination: '/flutter-assets/index.html',
       },
-      // Rewrite root to Flutter app
-      {
-        source: '/',
-        destination: '/flutter-assets/index.html',
-      },
       // Rewrite Flutter .env request to API route to bypass static file dotfile restriction
       {
         source: '/flutter-assets/assets/assets/.env',
