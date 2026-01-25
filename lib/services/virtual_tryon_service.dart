@@ -8,8 +8,9 @@ import 'package:path_provider/path_provider.dart';
 
 /// Service to handle Virtual Try-On using Google AI Studio Gemini API
 class VirtualTryOnService {
+  // Use "Nano Banana Pro" (Gemini 3 Pro Image Preview) for professional asset / image generation
   static const String _baseUrl =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent';
 
   String? get _apiKey => dotenv.env['GEMINI_API_KEY'];
 
@@ -39,18 +40,22 @@ class VirtualTryOnService {
             'parts': [
               {
                 'text':
-                    '''You are a fashion AI assistant specializing in virtual try-on. 
+                    '''You are a professional fashion photographer and digital artist. 
                 
-Your task: Take the clothing item from the second image and realistically place it on the person in the first image.
+Your task: Generate a hyper-realistic image of the person from the first image wearing the clothing item from the second image.
 
-Requirements:
-- Maintain the person's pose and body proportions
-- Adjust the clothing to fit naturally on the person
-- Preserve realistic lighting and shadows
-- Keep the background from the person's original photo
-- Make the result look like a real photograph
+CRITICAL INSTRUCTIONS:
+1.  **Photorealism**: The output MUST look like a real photograph, not a drawing or 3D render.
+2.  **Preserve Identity**: Keep the person's face, hair, body shape, and pose EXACTLY as they are in the original photo.
+3.  **Preserve Background**: Do not change the background.
+4.  **Clothing Fit**: The new clothing item must wrap naturally around the person's body, respecting gravity, folds, and shadows.
+5.  **Lighting**: Match the lighting on the clothing to the lighting in the original photo of the person.
+6.  **Integration**: Ensure seamless blending at the neck, arms, and waist.
 
-Generate the final image showing the person wearing the clothing item.''',
+Input 1: Image of a person.
+Input 2: Image of a clothing item.
+
+Output: A single high-quality image of the person wearing the clothing item.''',
               },
               {
                 'inlineData': {'mimeType': 'image/jpeg', 'data': personBase64},
@@ -65,8 +70,10 @@ Generate the final image showing the person wearing the clothing item.''',
           },
         ],
         'generationConfig': {
-          'responseModalities': ['image', 'text'],
-          'temperature': 0.4,
+          'responseModalities': ['image'], // Nano Banana Pro supports 'image' modality
+          'temperature': 0.3,
+          'topK': 40,
+          'topP': 0.95,
         },
       };
 

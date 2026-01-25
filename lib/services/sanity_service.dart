@@ -17,8 +17,8 @@ class SanityService {
       final List<dynamic> result = await client.fetch(query);
       return result.map((item) => Product.fromMap(item)).toList();
     } catch (e) {
-      print('Sanity fetch failed: $e. Returning mock products.');
-      return _getMockProducts();
+      print('Sanity fetch failed: $e');
+      return [];
     }
   }
 
@@ -29,8 +29,8 @@ class SanityService {
       final List<dynamic> result = await client.fetch(query);
       return result.map((item) => Category.fromMap(item)).toList();
     } catch (e) {
-      print('Sanity fetch failed: $e. Returning mock categories.');
-      return _getMockCategories();
+      print('Sanity fetch failed: $e');
+      return [];
     }
   }
 
@@ -41,12 +41,8 @@ class SanityService {
       final List<dynamic> result = await client.fetch(query);
       return result.map((item) => Product.fromMap(item)).toList();
     } catch (e) {
-      print('Sanity fetch failed: $e. Returning mock products for category.');
-      return _getMockProducts()
-          .where(
-            (p) => p.categoryId == categoryId || p.categoryId == 'mock-cat-1',
-          )
-          .toList();
+      print('Sanity fetch failed: $e');
+      return [];
     }
   }
 

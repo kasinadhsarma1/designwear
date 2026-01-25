@@ -100,9 +100,8 @@ class _DesignStudioScreenState extends State<DesignStudioScreen> {
                             Color(int.parse(_design.baseColor)),
                             BlendMode.modulate,
                           ),
-                          child: SafeNetworkImage(
-                            imageUrl:
-                                'https://raw.githubusercontent.com/yemon/react-native-tshirt-design/master/assets/images/tshirt_white.png',
+                          child: Image.asset(
+                            'assets/images/tshirt_white.png',
                             width: 300,
                             fit: BoxFit.contain,
                           ),

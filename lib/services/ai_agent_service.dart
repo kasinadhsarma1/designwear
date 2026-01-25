@@ -54,6 +54,7 @@ INSTRUCTIONS:
 4. ALWAYS return a JSON object if you are changing the design. Format: {"design": {...}}
 5. COLORS MUST BE IN "0xFFRRGGBB" FORMAT. Do not use "#".
 6. If just chatting, return plain text.
+7. **IMPORTANT**: You CANNOT generate new images/graphics. You can ONLY change color, text, and text position. If a user asks for a specific graphic (like "sunrise"), politely explain you can only change colors/text, and try to match the VIBE with colors (e.g., "I can't print a sunrise image, but I've set the shirt to a nice sunrise orange and yellow for you!").
 ''';
 
       final requestBody = {
@@ -89,27 +90,64 @@ INSTRUCTIONS:
               ],
             });
 
-            // Check for JSON in the response
-            try {
-              final cleanText = textResponse
-                  .replaceAll('```json', '')
-                  .replaceAll('```', '')
-                  .trim();
-              if (cleanText.startsWith('{') && cleanText.contains('"design"')) {
-                final jsonResponse = jsonDecode(cleanText);
-                if (jsonResponse is Map<String, dynamic> &&
-                    jsonResponse.containsKey('design')) {
-                  final newDesign = CustomDesign.fromJson(
-                    jsonResponse['design'],
-                  );
-                  return AgentResponse(
-                    text: "I've updated the design for you!",
-                    updatedDesign: newDesign,
-                  );
+            // Try to extract JSON from the response using Regex
+            // Matches content between ```json and ``` or just {...} if possible
+            final jsonRegex = RegExp(r'```json\s*(\{.*?\})\s*```', dotAll: true);
+            final match = jsonRegex.firstMatch(textResponse);
+
+            if (match != null) {
+              final jsonString = match.group(1);
+              try {
+                if (jsonString != null) {
+                  final jsonResponse = jsonDecode(jsonString);
+                  if (jsonResponse is Map<String, dynamic> &&
+                      jsonResponse.containsKey('design')) {
+                    final newDesign = CustomDesign.fromJson(
+                      jsonResponse['design'],
+                    );
+                    
+                    // Extract the conversational part (everything before the JSON)
+                    // so we don't show the raw JSON to the user
+                    final splitParts = textResponse.split('```json');
+                    final conversationalText = splitParts.isNotEmpty 
+                        ? splitParts[0].trim() 
+                        : "I've updated the design for you!";
+
+                    return AgentResponse(
+                      text: conversationalText.isNotEmpty ? conversationalText : "I've updated the design for you!",
+                      updatedDesign: newDesign,
+                    );
+                  }
                 }
+              } catch (e) {
+                print('JSON Parse Error: $e');
               }
-            } catch (e) {
-              print('JSON Parse Error: $e');
+            } else {
+              // Fallback: try to find just a raw JSON object if code blocks were omitted
+               try {
+                final start = textResponse.indexOf('{');
+                final end = textResponse.lastIndexOf('}');
+                if (start != -1 && end != -1 && end > start) {
+                   final potentialJson = textResponse.substring(start, end + 1);
+                   if (potentialJson.contains('"design"')) {
+                      final jsonResponse = jsonDecode(potentialJson);
+                       if (jsonResponse is Map<String, dynamic> &&
+                        jsonResponse.containsKey('design')) {
+                          final newDesign = CustomDesign.fromJson(
+                            jsonResponse['design'],
+                          );
+                          // Determine conversational text
+                          final conversationalText = textResponse.substring(0, start).trim();
+                           return AgentResponse(
+                            text: conversationalText.isNotEmpty ? conversationalText : "I've updated the design for you!",
+                            updatedDesign: newDesign,
+                          );
+                       }
+                   }
+                }
+              } catch (e) {
+                 print('Fallback JSON Parse Error: $e');
+              }
             }
 
             return AgentResponse(text: textResponse);
