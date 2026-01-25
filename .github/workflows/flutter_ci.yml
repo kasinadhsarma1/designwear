@@ -22,11 +22,10 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
-        with:
-          channel: 'stable'
-          cache: false
+      - name: Install Flutter manually
+        run: |
+          git clone https://github.com/flutter/flutter.git --depth 1 -b stable _flutter
+          echo "$GITHUB_WORKSPACE/_flutter/bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
         run: flutter pub get
