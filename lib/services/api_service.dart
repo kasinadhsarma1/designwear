@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 import '../models/category.dart';
 import '../config/gokwik_config.dart';
+import '../services/sanity_service.dart';
 
 /// Enhanced API service that can work with both Sanity directly and Next.js API
 class ApiService {
@@ -210,6 +211,3 @@ class ApiService {
     return await sanityService.fetchTaxRate();
   }
 }
-
-// Import the original SanityService for fallback
-import '../services/sanity_service.dart';

@@ -1,3 +1,6 @@
 [submodule "studio"]
 	path = studio
 	url = https://github.com/kasinadhsarma1/studio.git
+[submodule "web-next"]
+	path = web-next
+	url = https://github.com/kasinadhsarma1/web-next.git
