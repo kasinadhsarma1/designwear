@@ -57,3 +57,4 @@ firebase.json
 # Web Apps
 web/
 node_modules
+.next
