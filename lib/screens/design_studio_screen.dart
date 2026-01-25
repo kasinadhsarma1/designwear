@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/custom_design.dart';
 import '../models/product.dart';
 import '../services/cart_service.dart';
-import '../widgets/safe_network_image.dart';
+
 import '../widgets/agent_chat_widget.dart';
 
 class DesignStudioScreen extends StatefulWidget {
