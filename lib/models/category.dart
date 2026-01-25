@@ -19,8 +19,29 @@ class Category {
       title: map['title'] ?? '',
       slug: map['slug']?['current'] ?? '',
       description: map['description'] ?? '',
-      imageUrl:
-          map['imageUrl'], // We'll fetch this using Sanity's image URL builder logic
+      imageUrl: map['imageUrl'],
     );
+  }
+
+  /// Factory constructor for API response format (from Next.js API)
+  factory Category.fromApiMap(Map<String, dynamic> map) {
+    return Category(
+      id: map['id'] ?? '',
+      title: map['title'] ?? '',
+      slug: map['slug'] ?? '',
+      description: map['description'] ?? '',
+      imageUrl: map['imageUrl'],
+    );
+  }
+
+  /// Convert to JSON for API requests
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'slug': slug,
+      'description': description,
+      'imageUrl': imageUrl,
+    };
   }
 }
