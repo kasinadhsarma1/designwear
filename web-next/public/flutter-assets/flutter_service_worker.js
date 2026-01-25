@@ -18,7 +18,7 @@ const RESOURCES = {"canvaskit/skwasm.js.symbols": "3a4aadf4e8141f284bd524976b1d6
 "main.dart.js": "cb2fa6319ea3f474de974d90218b2a0b",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
 "version.json": "d71f45c226fe4db3dee51a33c54d7d3c",
-"flutter_bootstrap.js": "b530a9ba38bda40f169cecc6c7ce64e6",
+"flutter_bootstrap.js": "26a6f194448f54ba02f9f60addaa51d2",
 "manifest.json": "c7ba40db47656eab44f6aff4806a00b9",
 "assets/AssetManifest.bin": "e2fdb5b8509986ece2f7037d2ffdce43",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "33b7d9392238c04c131b6ce224e13711",

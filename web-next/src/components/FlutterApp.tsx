@@ -84,7 +84,12 @@ export default function FlutterApp({
 
       // Initialize Flutter app
       if (window._flutter && window._flutter.loader) {
-        const app = await window._flutter.loader.load();
+        const app = await window._flutter.loader.load({
+          config: {
+            entrypointBaseUrl: defaultConfig.assetBase,
+            canvasKitBaseUrl: defaultConfig.canvasKitBaseUrl,
+          }
+        });
 
         // Mount Flutter app to the container
         if (containerRef.current) {
