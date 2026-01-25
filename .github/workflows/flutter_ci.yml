@@ -36,7 +36,6 @@ jobs:
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
           echo "SANITY_PROJECT_ID=${{ secrets.SANITY_PROJECT_ID }}" >> .env
           echo "SANITY_DATASET=${{ secrets.SANITY_DATASET }}" >> .env
-          # Add other env vars if needed or use a dummy for build if they aren't critical for build time
 
       - name: Verify Formatting
         run: dart format --output=none --set-exit-if-changed .
