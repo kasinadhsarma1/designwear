@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 
 # Build Flutter web app
 echo "📦 Building Flutter web..."
-flutter build web --release
+flutter build web --release --base-href "/flutter-assets/"
 
 # Create Flutter assets directory in Next.js public folder
 FLUTTER_ASSETS_DIR="web-next/public/flutter-assets"
