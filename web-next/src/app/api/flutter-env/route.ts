@@ -2,39 +2,39 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
     const envContent = `# GoKwik Configuration
-GOKWIK_MERCHANT_ID=19w2ztg5723j
-GOKWIK_API_KEY=your_api_key_here
-GOKWIK_ENVIRONMENT=sandbox
+GOKWIK_MERCHANT_ID=${process.env.GOKWIK_MERCHANT_ID || '19w2ztg5723j'}
+GOKWIK_API_KEY=${process.env.GOKWIK_API_KEY || ''}
+GOKWIK_ENVIRONMENT=${process.env.GOKWIK_ENVIRONMENT || 'sandbox'}
 
 # Sanity Configuration
-SANITY_PROJECT_ID=jh7llku7
-SANITY_DATASET=production
+SANITY_PROJECT_ID=${process.env.SANITY_PROJECT_ID || 'jh7llku7'}
+SANITY_DATASET=${process.env.SANITY_DATASET || 'production'}
 
 # App Configuration
-APP_NAME=Design Wear
-DEBUG_MODE=true
+APP_NAME=${process.env.APP_NAME || 'Design Wear'}
+DEBUG_MODE=${process.env.DEBUG_MODE || 'true'}
 
 # Google AI Studio - Gemini API (Virtual Try-On)
 # Get your API key from: https://aistudio.google.com/apikey
-GEMINI_API_KEY=AIzaSyBMU6oSXsIRQ2xs1ERGHCm308xA8x-gCBo
+GEMINI_API_KEY=${process.env.GEMINI_API_KEY || ''}
 
 # Firebase Configuration
-FIREBASE_PROJECT_ID=designwear-app-8984
-FIREBASE_MESSAGING_SENDER_ID=653328426569
-FIREBASE_STORAGE_BUCKET=designwear-app-8984.firebasestorage.app
+FIREBASE_PROJECT_ID=${process.env.FIREBASE_PROJECT_ID || 'designwear-app-8984'}
+FIREBASE_MESSAGING_SENDER_ID=${process.env.FIREBASE_MESSAGING_SENDER_ID || '653328426569'}
+FIREBASE_STORAGE_BUCKET=${process.env.FIREBASE_STORAGE_BUCKET || 'designwear-app-8984.firebasestorage.app'}
 
 # Web/Windows
-FIREBASE_WEB_API_KEY=AIzaSyANcu7nVVDJdGG462XPljYLlX0aTlAiUhE
-FIREBASE_WEB_APP_ID=1:653328426569:web:005abd63cc23b9a7628198
-FIREBASE_WINDOWS_APP_ID=1:653328426569:web:62bd79abd96884a9628198
+FIREBASE_WEB_API_KEY=${process.env.FIREBASE_WEB_API_KEY || ''}
+FIREBASE_WEB_APP_ID=${process.env.FIREBASE_WEB_APP_ID || ''}
+FIREBASE_WINDOWS_APP_ID=${process.env.FIREBASE_WINDOWS_APP_ID || ''}
 
 # Android
-FIREBASE_ANDROID_API_KEY=AIzaSyDNWo106_KVF81LeWH-DoQOsC0ku-8fsB8
-FIREBASE_ANDROID_APP_ID=1:653328426569:android:c97bfb5c89a60f72628198
+FIREBASE_ANDROID_API_KEY=${process.env.FIREBASE_ANDROID_API_KEY || ''}
+FIREBASE_ANDROID_APP_ID=${process.env.FIREBASE_ANDROID_APP_ID || ''}
 
 # iOS/macOS
-FIREBASE_IOS_API_KEY=AIzaSyDcyc3GmnhEwws1xLK03jZ5prT_gmUvtPI
-FIREBASE_IOS_APP_ID=1:653328426569:ios:d2ac17e1f0c1d01c628198
+FIREBASE_IOS_API_KEY=${process.env.FIREBASE_IOS_API_KEY || ''}
+FIREBASE_IOS_APP_ID=${process.env.FIREBASE_IOS_APP_ID || ''}
 `;
 
     return new NextResponse(envContent, {
