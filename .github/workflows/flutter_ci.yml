@@ -38,8 +38,9 @@ jobs:
           echo "SANITY_DATASET=${{ secrets.SANITY_DATASET }}" >> assets/.env
 
       - name: Write google-services.json
-        run: |
-          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
 
       - name: Verify Formatting
         run: dart format --output=none --set-exit-if-changed lib test
