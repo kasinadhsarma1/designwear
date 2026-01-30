@@ -54,7 +54,6 @@ app.*.map.json
 firebase.json
 
 # Web Apps
-web/
 node_modules
 .next
 public
