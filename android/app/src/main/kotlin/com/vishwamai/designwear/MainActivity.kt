@@ -1,4 +1,4 @@
-package com.example.designwear
+package com.vishwamai.designwear
 
 import io.flutter.embedding.android.FlutterActivity
 
