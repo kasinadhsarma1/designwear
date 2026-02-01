@@ -75,14 +75,53 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<void> loginWithPhone(String phone, String otp) async {
-    // Note: Phone auth requires a different flow (verifyPhoneNumber)
-    // For now, keeping as a placeholder or implementing if needed
+  String? _verificationId;
+
+  Future<void> sendOtp(String phoneNumber) async {
     _isLoading = true;
     notifyListeners();
     try {
-      // Logic for phone auth would go here
-      // For simplicity in this step, focusing on email/password
+      await _auth.verifyPhoneNumber(
+        phoneNumber: '+91$phoneNumber', // Assuming +91 for now as per UI
+        verificationCompleted: (fb.PhoneAuthCredential credential) async {
+          // Auto-resolution on Android
+          await _auth.signInWithCredential(credential);
+        },
+        verificationFailed: (fb.FirebaseAuthException e) {
+          _isLoading = false;
+          notifyListeners();
+          throw e;
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          _verificationId = verificationId;
+          _isLoading = false;
+          notifyListeners();
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          _verificationId = verificationId;
+        },
+      );
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<void> loginWithPhone(String otp) async {
+    if (_verificationId == null) {
+      // Should not happen if flow is correct, but safe guard
+      throw Exception("Verification ID is missing. Please request OTP first.");
+    }
+    
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final credential = fb.PhoneAuthProvider.credential(
+        verificationId: _verificationId!,
+        smsCode: otp,
+      );
+      await _auth.signInWithCredential(credential);
     } finally {
       _isLoading = false;
       notifyListeners();

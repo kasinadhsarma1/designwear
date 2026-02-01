@@ -38,23 +38,39 @@ class _LoginScreenState extends State<LoginScreen>
     super.dispose();
   }
 
-  void _sendOtp() {
+  Future<void> _sendOtp() async {
     if (_phoneController.text.length != 10) {
       setState(() => _error = 'Please enter a valid 10-digit phone number');
       return;
     }
 
     setState(() {
+      _isLoading = true;
       _error = null;
-      _showOtpField = true;
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('OTP sent to your phone!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    try {
+      await context.read<AuthService>().sendOtp(_phoneController.text);
+      
+      if (mounted) {
+        setState(() {
+          _showOtpField = true;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('OTP sent to your phone!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() => _error = e.toString());
+    } finally {
+      if (mounted && !_showOtpField) { // Only stop loading if we didn't switch to OTP view (error case)
+         setState(() => _isLoading = false);
+      }
+    }
   }
 
   Future<void> _verifyOtp() async {
@@ -70,7 +86,6 @@ class _LoginScreenState extends State<LoginScreen>
 
     try {
       await context.read<AuthService>().loginWithPhone(
-        _phoneController.text,
         _otpController.text,
       );
 
