@@ -37,9 +37,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 20,
         title: Text(
           'Design Wear',
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
         ),
         actions: [
           // Login/Profile Button
@@ -107,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+          const SizedBox(width: 12),
         ],
       ),
       body: SingleChildScrollView(
@@ -129,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       width: double.infinity,
       height: 240,
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(
@@ -186,14 +191,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+                      horizontal: 32,
+                      vertical: 16,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0),
                     ),
                   ),
-                  child: const Text('SHOP NOW'),
+                  child: Text(
+                    'SHOP NOW',
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -212,8 +224,8 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        height: 120,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        height: 140,
         decoration: BoxDecoration(
           color: Colors.black,
           image: const DecorationImage(
@@ -240,18 +252,19 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
+                  horizontal: 20,
+                  vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFFD4AF37)),
+                  border: Border.all(color: const Color(0xFFD4AF37), width: 2),
                 ),
                 child: Text(
                   'START CREATING',
                   style: GoogleFonts.outfit(
                     color: const Color(0xFFD4AF37),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    letterSpacing: 1.5,
                   ),
                 ),
               ),
@@ -264,28 +277,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
+      padding: const EdgeInsets.fromLTRB(20, 32, 20, 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title.toUpperCase(),
             style: GoogleFonts.outfit(
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
               color: Colors.black87,
             ),
           ),
+          const SizedBox(width: 16),
           Text(
             'See All',
             style: GoogleFonts.outfit(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
               color: const Color(0xFFD4AF37),
               decoration: TextDecoration.underline,
             ),
           ),
+          const Spacer(),
         ],
       ),
     );
@@ -310,10 +324,10 @@ class _HomeScreenState extends State<HomeScreen> {
         return SizedBox(
           height: 50,
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             scrollDirection: Axis.horizontal,
             itemCount: snapshot.data!.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
               final category = snapshot.data![index];
               return Container(
@@ -354,12 +368,12 @@ class _HomeScreenState extends State<HomeScreen> {
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.60, // Taller images for fashion
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 24,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: _getCrossAxisCount(context),
+            childAspectRatio: _getChildAspectRatio(context),
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 32,
           ),
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
@@ -394,20 +408,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 12),
                   Text(
                     product.title,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
                       color: Colors.black87,
+                      height: 1.3,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     '₹${product.price.toStringAsFixed(2)}',
                     style: GoogleFonts.outfit(
                       color: Colors.black,
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -418,5 +433,23 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+  int _getCrossAxisCount(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    if (width > 1400) return 5;
+    if (width > 1024) return 4;
+    if (width > 768) return 3;
+    if (width > 480) return 2;
+    return 1;
+  }
+
+  double _getChildAspectRatio(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    // Adjusted for better card proportions with new typography
+    if (width > 1400) return 0.65;
+    if (width > 1024) return 0.60;
+    if (width > 768) return 0.58;
+    if (width > 480) return 0.65;
+    return 0.75;
   }
 }

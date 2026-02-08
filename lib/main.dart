@@ -7,15 +7,28 @@ import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 import 'services/cart_service.dart';
 import 'services/auth_service.dart';
+import 'config/gokwik_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables
+  // Initialize config loader (loads env.json for web)
+  await ConfigLoader.init();
+
+  // Load environment variables from .env (fallback for mobile)
   await dotenv.load(fileName: "assets/.env");
 
-  // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Initialize Firebase with error handling for duplicate initialization
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    // Ignore duplicate app error, Firebase is already initialized
+    if (!e.toString().contains('duplicate-app')) {
+      rethrow;
+    }
+  }
 
   runApp(const DesignWearApp());
 }

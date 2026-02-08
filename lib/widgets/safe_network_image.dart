@@ -21,6 +21,30 @@ class SafeNetworkImage extends StatelessWidget {
       return _buildPlaceholder();
     }
 
+    // On Web, use Image.network to avoid CORS issues with cached_network_image
+    // and leverage browser caching.
+    if (const bool.fromEnvironment('dart.library.js_util')) {
+      return Image.network(
+        imageUrl,
+        width: width,
+        height: height,
+        fit: fit,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey.shade100,
+            child: const Center(
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          debugPrint('Error loading image $imageUrl: $error');
+          return _buildPlaceholder();
+        },
+      );
+    }
+
     return CachedNetworkImage(
       imageUrl: imageUrl,
       width: width,
