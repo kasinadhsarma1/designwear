@@ -58,3 +58,6 @@ node_modules
 .next
 public
 next.config.ts
+
+assets/env.json
+.firebase/hosting.YnVpbGQvd2Vi.cache
